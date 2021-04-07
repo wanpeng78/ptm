@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+
+	"gitee.com/Stitchtor/ptm/syscheck"
 )
 
 func main() {
 	fmt.Println("Hello~")
-	syscheck.check()
+	fmt.Println(syscheck.Check())
 }
