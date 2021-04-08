@@ -1,12 +1,16 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
 	"gitee.com/Stitchtor/ptm/syscheck"
 )
 
 func main() {
-	fmt.Println("Hello~")
-	fmt.Println(syscheck.Check())
+	sysinfo, err := syscheck.SystemInfo()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	sysinfo.ShowInfo()
 }
