@@ -6,6 +6,7 @@
 *.dylib
 ptm
 Makefile
+!/cmd/ptm
 
 # Test binary, built with `go test -c`
 *.test
