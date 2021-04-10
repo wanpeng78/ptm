@@ -42,7 +42,7 @@ func TestSpeedTest(t *testing.T) {
 	fmt.Println("---------")
 }
 
-func TestLatencyTestSlice(t *testing.T) {
+func TestLatencyTest(t *testing.T) {
 	urls := []string{
 		"mirrors.tuna.tsinghua.edu.cn",
 		"https://www.baidu.com",
