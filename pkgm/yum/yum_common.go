@@ -35,10 +35,12 @@ func repoGenerate(mirror filter.Result) (ret repo) {
 	ret.fileName = fmt.Sprintf("CentOS-%s", mirror.Name)
 	switch sysVersion {
 	case 7:
-		s := strings.ReplaceAll(centos7, "[mirror]", mirror.Address)
+		s := strings.ReplaceAll(centos7, "[Mirror]", mirror.Address)
+		s = strings.ReplaceAll(s, "Name", mirror.Name)
 		ret.data = s
 	case 8:
-		s := strings.ReplaceAll(centos8, "[mirror]", mirror.Address)
+		s := strings.ReplaceAll(centos8, "[Mirror]", mirror.Address)
+		s = strings.ReplaceAll(s, "Name", mirror.Name)
 		ret.data = s
 	}
 	return

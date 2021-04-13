@@ -10,7 +10,7 @@
 #
 
 [base]
-name=CentOS-$releasever - Base - mirrors.aliyun.com
+name=CentOS-$releasever - Base - [Name]
 failovermethod=priority
 baseurl=[Mirror]$releasever/os/$basearch/
 gpgcheck=1
@@ -18,7 +18,7 @@ gpgkey=[Mirror]RPM-GPG-KEY-CentOS-7
 
 #released updates
 [updates]
-name=CentOS-$releasever - Updates - mirrors.aliyun.com
+name=CentOS-$releasever - Updates - [Name]
 failovermethod=priority
 baseurl=[Mirror]$releasever/updates/$basearch/
 gpgcheck=1
@@ -26,7 +26,7 @@ gpgkey=[Mirror]RPM-GPG-KEY-CentOS-7
 
 #additional packages that may be useful
 [extras]
-name=CentOS-$releasever - Extras - mirrors.aliyun.com
+name=CentOS-$releasever - Extras - [Name]
 failovermethod=priority
 baseurl=[Mirror]$releasever/extras/$basearch/
 gpgcheck=1
@@ -34,7 +34,7 @@ gpgkey=[Mirror]RPM-GPG-KEY-CentOS-7
 
 #additional packages that extend functionality of existing packages
 [centosplus]
-name=CentOS-$releasever - Plus - mirrors.aliyun.com
+name=CentOS-$releasever - Plus - [Name]
 failovermethod=priority
 baseurl=[Mirror]$releasever/centosplus/$basearch/
 gpgcheck=1
@@ -43,7 +43,7 @@ gpgkey=[Mirror]RPM-GPG-KEY-CentOS-7
 
 #contrib - packages by Centos Users
 [contrib]
-name=CentOS-$releasever - Contrib - mirrors.aliyun.com
+name=CentOS-$releasever - Contrib - [Name]
 failovermethod=priority
 baseurl=[Mirror]$releasever/contrib/$basearch/
 gpgcheck=1
