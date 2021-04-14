@@ -2,7 +2,6 @@ package syscheck
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/elastic/go-sysinfo"
 	"github.com/elastic/go-sysinfo/types"
@@ -10,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// SysType is a type of Linux distribution
+// SysType is a type which Linux distribution
 type SysType string
 
 // SysInfo is a warpper of types.OS
@@ -45,19 +44,6 @@ const (
 	// UnSupported for others,which unsupported for now
 	UnSupported SysType = "unsupported"
 )
-
-//Check to identify systemd type
-func Check() string {
-	info := sysinfo.Go()
-	os := info.OS
-	host, err := sysinfo.Host()
-	if err != nil {
-		log.Println(err)
-	}
-	fmt.Println("Host:", host)
-	fmt.Println("OS", os)
-	return os
-}
 
 // SystemType return the type of the running linux
 func SystemType() (SysType, error) {
