@@ -14,7 +14,7 @@ import (
 type APT struct{}
 
 // Version get apt's version
-func (a *APT) Version() string {
+func (a APT) Version() string {
 	cmd := exec.Command("apt", "--version")
 	r, _ := cmd.StdoutPipe()
 	_ = cmd.Start()
@@ -40,7 +40,7 @@ func (a APT) BackupMirror() error {
 }
 
 // WriteFile write mirror to file
-func (a *APT) WriteFile(mirrors filter.Results) error {
+func (a APT) WriteFile(mirrors filter.Results) error {
 	notifaction :=
 		`
 	###
@@ -70,7 +70,7 @@ func (a *APT) WriteFile(mirrors filter.Results) error {
 	for _, v := range mirrors {
 		aptSymbols := aptSymbols(sysSymbol)
 		for _, aptSymbol := range aptSymbols {
-			mirror := fmt.Sprintf("%s %s %s", v.Address, aptSymbol, general)
+			mirror := fmt.Sprintf("%s %s %s %s", v.Address, "ubuntu/", aptSymbol, general)
 			file.WriteString("deb " + mirror + "\n")
 			file.WriteString("# deb-src " + mirror + "\n")
 		}

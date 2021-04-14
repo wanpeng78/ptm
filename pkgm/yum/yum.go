@@ -1,19 +1,16 @@
 package yum
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
-	"strings"
 
 	"gitee.com/Stitchtor/ptm/filter"
 	colorful "github.com/fatih/color"
 )
 
 // YUM for CentOS's yum
-type YUM struct {
-}
+type YUM struct {}
 
 // Version for get version of yum in localhost
 func (y YUM) Version() string {
@@ -42,7 +39,7 @@ func (y YUM) WriteFile(mirrors filter.Results) error {
 
 // BackupMirror for backing up local yum mirrors file
 // Back`
-func (y *YUM) BackupMirror() error {
+func (y YUM) BackupMirror() error {
 	// we take advanced of yum sources
 	// do not modify original yum source file
 	// just add a new file which include of mirror source
@@ -53,9 +50,4 @@ func (y *YUM) BackupMirror() error {
 //MirrorFilePath return yum source file path
 func (y YUM) MirrorFilePath() string {
 	return `/etc/yum.repos.d/`
-}
-
-func Hello() {
-	mirrorFile := strings.Replace(centos7, "[Mirror]", "https://mirrors.tsinghua.tuna.com/CentOS/", -1)
-	fmt.Println(mirrorFile)
 }
