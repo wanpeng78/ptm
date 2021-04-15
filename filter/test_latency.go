@@ -13,10 +13,14 @@ import (
 
 // Result is just result
 type Result struct {
+	//Name is mirror in eng short
+	Name string
 	//Address is IP or domain
 	Address string
 	//Latency in ms
 	Latency time.Duration
+	//Ping if remote can be ping successfuly
+	Ping bool
 	//Error for invalid remote host
 	Error error
 }
@@ -35,15 +39,19 @@ func (r *Results) SortByDuration() {
 // and store valid remote's index in c
 // the faster the less for remote's index
 //
+// if you do not want a result which sored ,this is better
+//
 // Args:
-// addrs -> []string{"www.bing.com","192.168.12.1"}
-// c 	 -> store result for goroutine
-// loops -> ping times
-// retry -> wheather try to use net.Dial to test latency after ping failed
+// addrs 	 -> []string{"www.bing.com","192.168.12.1"}
+// c 	 		 -> store result for goroutine
+// loops 	 -> ping times
+// gos   	 -> concurrency numbers
+// retry   -> wheather try to use net.Dial to test latency after ping failed
 // timeout -> timeout for ping and net.Dial
+// names 	 -> [optional] url's name exist a map relation
 //
 // this is based on icmp protocl, requiring to run as privileged otherwise block
-func LatencyTestWithChan(addrs []string, c chan<- Result, loops int, retry bool, timeout time.Duration) error {
+func LatencyTestWithChan(addrs []string, c chan<- Result, loops int, gos int, retry bool, timeout time.Duration, names ...string) error {
 	if len(addrs) < 1 {
 		return errors.New("remote host addr must more than one")
 	}
@@ -53,13 +61,19 @@ func LatencyTestWithChan(addrs []string, c chan<- Result, loops int, retry bool,
 	}
 	fixedAddrs := urlHandler(addrs)
 	var wg sync.WaitGroup
-
+	goroutinePool := make(chan struct{}, gos)
+	// To set max concurrency nums
+	for i := 0; i < gos; i++ {
+		goroutinePool <- struct{}{}
+	}
 	for idx, addr := range fixedAddrs {
 		wg.Add(1)
+		<-goroutinePool
 		go func(addr string, idx int) {
 			defer wg.Done()
 			var err error
 			var latency time.Duration
+			var pingfailed bool
 			// By using icmp(ping) to test latency
 			p := ping.New(addr)
 			p.Timeout = timeout
@@ -70,12 +84,14 @@ func LatencyTestWithChan(addrs []string, c chan<- Result, loops int, retry bool,
 			// switch tp tcp:http
 			if statis.PacketLoss == 100 && retry {
 				last := time.Now()
+				pingfailed = true
 				_, err = net.DialTimeout("tcp", addr+":http", timeout)
 				latency = time.Now().Sub(last)
 			} else {
 				latency = statis.AvgRtt
 			}
-			c <- Result{Address: addr, Latency: latency, Error: err}
+			c <- Result{Name: names[idx], Address: addr, Latency: latency, Ping: !pingfailed, Error: err}
+			goroutinePool <- struct{}{}
 		}(addr, idx)
 	}
 	wg.Wait()
@@ -90,12 +106,14 @@ func LatencyTestWithChan(addrs []string, c chan<- Result, loops int, retry bool,
 // addrs -> []string{"www.bing.com","192.168.12.1"}
 // loops -> ping times
 // retry -> wheather try to use net.Dial to test latency after ping failed
+// gos   -> concurrency numbers
 // timeout -> timeout for ping and net.Dial
+// names -> [optional] url's name exist a map relation
 //
 // for improving efficiency to use LatencyTestWithChan in goroutine instead of this
 // but this provide a sort method(Results.SortByDuration)
 // This is based on icmp protocl, requiring to run as privileged otherwise block
-func LatencyTest(addrs []string, loops int, retry bool, timeout time.Duration) (rets Results, err error) {
+func LatencyTest(addrs []string, loops int, retry bool, gos int, timeout time.Duration, names ...string) (rets Results, err error) {
 	if len(addrs) < 1 {
 		return nil, errors.New("remote host addr must more than one")
 	}
@@ -105,13 +123,19 @@ func LatencyTest(addrs []string, loops int, retry bool, timeout time.Duration) (
 	}
 	fixedAddrs := urlHandler(addrs)
 	var wg sync.WaitGroup
-
+	goroutinePool := make(chan struct{}, gos)
+	// To set max concurrency nums
+	for i := 0; i < gos; i++ {
+		goroutinePool <- struct{}{}
+	}
 	for idx, addr := range fixedAddrs {
 		wg.Add(1)
+		<-goroutinePool
 		go func(addr string, idx int) {
 			defer wg.Done()
 			var err error
 			var latency time.Duration
+			var pingfailed bool
 			p := ping.New(addr)
 			p.Timeout = timeout
 			p.Count = loops
@@ -121,12 +145,14 @@ func LatencyTest(addrs []string, loops int, retry bool, timeout time.Duration) (
 			// switch tp tcp:http
 			if statis.PacketLoss == 100 && retry {
 				last := time.Now()
+				pingfailed = true
 				_, err = net.DialTimeout("tcp", addr+":http", timeout)
 				latency = time.Now().Sub(last)
 			} else {
 				latency = statis.AvgRtt
 			}
-			rets = append(rets, Result{Address: addr, Latency: latency, Error: err})
+			rets = append(rets, Result{Name: names[idx], Address: addr, Latency: latency, Ping: !pingfailed, Error: err})
+			goroutinePool <- struct{}{}
 		}(addr, idx)
 	}
 	wg.Wait()
