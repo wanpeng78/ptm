@@ -87,7 +87,7 @@ func showMirrorsInfo(mirrors filter.Results, onlyShow bool) []int {
 		if result.Ping {
 			mirrorsTable.AppendRow(table.Row{idx, result.Name, result.Latency.Milliseconds(), result.Address})
 		} else {
-			mirrorsTable.AppendRow(table.Row{idx, result.Name, result.Latency.Milliseconds(), result.Address, "远程服务器禁止ping，延迟可能不正确"})
+			mirrorsTable.AppendRow(table.Row{idx, result.Name, result.Latency.Milliseconds(), result.Address, "远程服务器禁止ping，请以访问延迟为准"})
 		}
 	}
 	fmt.Println(mirrorsTable.Render())
