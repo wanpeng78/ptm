@@ -1,6 +1,7 @@
 package apt
 
 import (
+	"bufio"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -77,4 +78,12 @@ func (a APT) WriteFile(mirrors filter.Results) error {
 
 	}
 	return nil
+}
+
+// Refresh execute apt update to update source cache
+func (a APT) Refresh() *bufio.Reader {
+	cmd := exec.Command("apt", "update")
+	out, _ := cmd.StdoutPipe()
+	cmd.Start()
+	return bufio.NewReader(out)
 }

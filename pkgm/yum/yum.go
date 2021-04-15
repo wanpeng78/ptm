@@ -1,6 +1,7 @@
 package yum
 
 import (
+	"bufio"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -10,7 +11,7 @@ import (
 )
 
 // YUM for CentOS's yum
-type YUM struct {}
+type YUM struct{}
 
 // Version for get version of yum in localhost
 func (y YUM) Version() string {
@@ -50,4 +51,12 @@ func (y YUM) BackupMirror() error {
 //MirrorFilePath return yum source file path
 func (y YUM) MirrorFilePath() string {
 	return `/etc/yum.repos.d/`
+}
+
+// Refresh cleanup cache and make
+func (y YUM) Refresh() *bufio.Reader {
+	cmd := exec.Command("yum", "repolist")
+	out, _ := cmd.StdoutPipe()
+	cmd.Start()
+	return bufio.NewReader(out)
 }
