@@ -85,8 +85,10 @@ func LatencyTestWithChan(addrs []string, c chan<- Result, loops int, gos int, re
 			if statis.PacketLoss == 100 && retry {
 				last := time.Now()
 				pingfailed = true
-				_, err = net.DialTimeout("tcp", addr+":http", timeout)
-				latency = time.Now().Sub(last)
+				for i := 0; i < loops; i++ {
+					_, err = net.DialTimeout("tcp", addr+":http", timeout)
+				}
+				latency = time.Now().Sub(last) / time.Duration(loops)
 			} else {
 				latency = statis.AvgRtt
 			}
@@ -146,8 +148,10 @@ func LatencyTest(addrs []string, loops int, retry bool, gos int, timeout time.Du
 			if statis.PacketLoss == 100 && retry {
 				last := time.Now()
 				pingfailed = true
-				_, err = net.DialTimeout("tcp", addr+":http", timeout)
-				latency = time.Now().Sub(last)
+				for i := 0; i < loops; i++ {
+					_, err = net.DialTimeout("tcp", addr+":http", timeout)
+				}
+				latency = time.Now().Sub(last) / time.Duration(loops)
 			} else {
 				latency = statis.AvgRtt
 			}
