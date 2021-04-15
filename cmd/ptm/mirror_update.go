@@ -23,6 +23,7 @@ type MirrorsOnline struct {
 }
 
 func fetchData() (*MirrorsOnline, error) {
+	colorful.Green("获取在线镜像数据.....")
 	mo := new(MirrorsOnline)
 	req, _ := http.NewRequest("GET", mirrorFileURL, nil)
 	req.Header.Set("User-Agent", "ptm")
@@ -37,9 +38,9 @@ func fetchData() (*MirrorsOnline, error) {
 	}
 	// Check update
 	if mo.Version > version {
-		colorful.Green("new version has been released: %.2f\n %s\n", mo.Version, link)
+		colorful.Cyan("发现新版本: %.2f\n %s\n", mo.Version, link)
 		colorful.Red("%s", mo.ReleasedMsg)
 	}
-
+	colorful.Green("数据获取成功")
 	return mo, nil
 }
