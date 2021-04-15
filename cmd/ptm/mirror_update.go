@@ -19,6 +19,7 @@ type MirrorsOnline struct {
 		URL       string   `json:"url"`
 		Protocols []string `json:"protocols"`
 	} `json:"mirrors"`
+	ReleasedMsg string `json:"released_msg"`
 }
 
 func fetchData() (*MirrorsOnline, error) {
@@ -36,7 +37,8 @@ func fetchData() (*MirrorsOnline, error) {
 	}
 	// Check update
 	if mo.Version > version {
-		colorful.Green("new version has been released: %f\n %s\n", mo.Version, link)
+		colorful.Green("new version has been released: %.2f\n %s\n", mo.Version, link)
+		colorful.Red("%s", mo.ReleasedMsg)
 	}
 
 	return mo, nil
