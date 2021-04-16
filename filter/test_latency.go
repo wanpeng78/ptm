@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net"
 	"os"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -31,9 +32,20 @@ type Results []Result
 
 // SortByDuration just sort follow duration
 // Using insert sort
-func (r *Results) SortByDuration() {
-	re := insertSort(*r)
-	r = &re
+func (r Results) SortByDuration() {
+	d := sort.Reverse(r)
+	sort.Sort(d)
+}
+
+// implement sort.Interface interface
+func (r Results) Len() int {
+	return len(r)
+}
+func (r Results) Less(i, j int) bool {
+	return r[i].Latency > r[j].Latency
+}
+func (r Results) Swap(i, j int) {
+	r[i], r[j] = r[j], r[i]
 }
 
 // LatencyTestWithChan test latency between remote and local,
@@ -181,20 +193,6 @@ func urlHandler(urls []string) (validURLs []string) {
 		validURLs = append(validURLs, s)
 	}
 	return
-}
-
-func insertSort(res Results) Results {
-	for i := 1; i < len(res); i++ {
-		tmp := res[i]
-		j := i - 1
-		for j >= 0 && tmp.Latency < res[j].Latency {
-			res[j+1] = res[j]
-			j--
-		}
-		res[j+1] = tmp
-	}
-
-	return res
 }
 
 // enable ipv4 ping
