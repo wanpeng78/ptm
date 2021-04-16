@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/go-ping/ping"
+	"github.com/lorenzosaino/go-sysctl"
 )
 
 // Result is just result
@@ -59,6 +60,10 @@ func LatencyTestWithChan(addrs []string, c chan<- Result, loops int, gos int, re
 	if os.Geteuid() != 0 {
 		return errors.New("please run this program as root user")
 	}
+	err := enablePing()
+	if err != nil {
+		return errors.New("enable ipv4 failed")
+	}
 	fixedAddrs := urlHandler(addrs)
 	var wg sync.WaitGroup
 	goroutinePool := make(chan struct{}, gos)
@@ -92,7 +97,7 @@ func LatencyTestWithChan(addrs []string, c chan<- Result, loops int, gos int, re
 			} else {
 				latency = statis.AvgRtt
 			}
-			c <- Result{Name: names[idx], Address: addr, Latency: latency, Ping: !pingfailed, Error: err}
+			c <- Result{Name: names[idx], Address: addrs[idx], Latency: latency, Ping: !pingfailed, Error: err}
 			goroutinePool <- struct{}{}
 		}(addr, idx)
 	}
@@ -122,6 +127,10 @@ func LatencyTest(addrs []string, loops int, retry bool, gos int, timeout time.Du
 	// Check privileged
 	if os.Geteuid() != 0 {
 		return nil, errors.New("please run this program as root user")
+	}
+	err = enablePing()
+	if err != nil {
+		return nil, errors.New("enable ipv4 failed")
 	}
 	fixedAddrs := urlHandler(addrs)
 	var wg sync.WaitGroup
@@ -155,7 +164,7 @@ func LatencyTest(addrs []string, loops int, retry bool, gos int, timeout time.Du
 			} else {
 				latency = statis.AvgRtt
 			}
-			rets = append(rets, Result{Name: names[idx], Address: addr, Latency: latency, Ping: !pingfailed, Error: err})
+			rets = append(rets, Result{Name: names[idx], Address: addrs[idx], Latency: latency, Ping: !pingfailed, Error: err})
 			goroutinePool <- struct{}{}
 		}(addr, idx)
 	}
@@ -186,4 +195,10 @@ func insertSort(res Results) Results {
 	}
 
 	return res
+}
+
+// enable ipv4 ping
+// More information @https://pkg.go.dev/github.com/go-ping/ping
+func enablePing() error {
+	return sysctl.Set("net.ipv4.ping_group_range", "0 2147483647")
 }
