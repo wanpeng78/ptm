@@ -31,21 +31,3 @@ failovermethod=priority
 baseurl=[Mirror]$releasever/extras/$basearch/
 gpgcheck=1
 gpgkey=[Mirror]RPM-GPG-KEY-CentOS-7
-
-#additional packages that extend functionality of existing packages
-[centosplus]
-name=CentOS-$releasever - Plus - [Name]
-failovermethod=priority
-baseurl=[Mirror]$releasever/centosplus/$basearch/
-gpgcheck=1
-enabled=0
-gpgkey=[Mirror]RPM-GPG-KEY-CentOS-7
-
-#contrib - packages by Centos Users
-[contrib]
-name=CentOS-$releasever - Contrib - [Name]
-failovermethod=priority
-baseurl=[Mirror]$releasever/contrib/$basearch/
-gpgcheck=1
-enabled=0
-gpgkey=[Mirror]RPM-GPG-KEY-CentOS-7
