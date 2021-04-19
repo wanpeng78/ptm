@@ -13,39 +13,39 @@
 [base]
 name=CentOS-$releasever - Base - [Name]
 failovermethod=priority
-baseurl=[Mirror]$releasever/BaseOS/$basearch/os/
+baseurl=[Mirror]/$releasever/BaseOS/$basearch/os/
 gpgcheck=1
-gpgkey=[Mirror]RPM-GPG-KEY-CentOS-Official
+gpgkey=[Mirror]/RPM-GPG-KEY-CentOS-Official
 
 #additional packages that may be useful
 [extras]
 name=CentOS-$releasever - Extras - [Name]
 failovermethod=priority
-baseurl=[Mirror]$releasever/extras/$basearch/os/
+baseurl=[Mirror]/$releasever/extras/$basearch/os/
 gpgcheck=1
-gpgkey=[Mirror]RPM-GPG-KEY-CentOS-Official
+gpgkey=[Mirror]/RPM-GPG-KEY-CentOS-Official
 
 #additional packages that extend functionality of existing packages
 [centosplus]
 name=CentOS-$releasever - Plus - [Name]
 failovermethod=priority
-baseurl=[Mirror]$releasever/centosplus/$basearch/os/
+baseurl=[Mirror]/$releasever/centosplus/$basearch/os/
 gpgcheck=1
 enabled=0
-gpgkey=[Mirror]RPM-GPG-KEY-CentOS-Official
+gpgkey=[Mirror]/RPM-GPG-KEY-CentOS-Official
 
 [PowerTools]
 name=CentOS-$releasever - PowerTools - [Name]
 failovermethod=priority
-baseurl=[Mirror]$releasever/PowerTools/$basearch/os/
+baseurl=[Mirror]/$releasever/PowerTools/$basearch/os/
 gpgcheck=1
 enabled=0
-gpgkey=[Mirror]RPM-GPG-KEY-CentOS-Official
+gpgkey=[Mirror]/RPM-GPG-KEY-CentOS-Official
 
 
 [AppStream]
 name=CentOS-$releasever - AppStream - [Name]
 failovermethod=priority
-baseurl=[Mirror]$releasever/AppStream/$basearch/os/
+baseurl=[Mirror]/$releasever/AppStream/$basearch/os/
 gpgcheck=1
-gpgkey=[Mirror]RPM-GPG-KEY-CentOS-Official
+gpgkey=[Mirror]/RPM-GPG-KEY-CentOS-Official
