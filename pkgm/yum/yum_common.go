@@ -16,30 +16,34 @@ var centos7 string
 //go:embed tmpl/centos8.tmpl
 var centos8 string
 
-var sysVersion int
-
 type repo struct {
 	fileName string
 	data     string
 }
 
-func init() {
+// New return a YUM
+func New() YUM {
+	return YUM{}
+}
+
+func sysVersion() int {
 	host, err := syscheck.SystemInfo()
 	if err != nil {
-		return
+		return 0
 	}
-	sysVersion = host.OS.Major
+	return host.OS.Major
 }
 
 func repoGenerate(mirror filter.Result) (ret repo) {
-	ret.fileName = fmt.Sprintf("CentOS-%s", mirror.Name)
-	switch sysVersion {
+	ret.fileName = fmt.Sprintf("CentOS-%s.repo", mirror.Name)
+	mirrorSite := fmt.Sprintf("%scentos", mirror.Address)
+	switch sysVersion() {
 	case 7:
-		s := strings.ReplaceAll(centos7, "[Mirror]", mirror.Address)
+		s := strings.ReplaceAll(centos7, "[Mirror]", mirrorSite)
 		s = strings.ReplaceAll(s, "Name", mirror.Name)
 		ret.data = s
 	case 8:
-		s := strings.ReplaceAll(centos8, "[Mirror]", mirror.Address)
+		s := strings.ReplaceAll(centos8, "[Mirror]", mirrorSite)
 		s = strings.ReplaceAll(s, "Name", mirror.Name)
 		ret.data = s
 	}
