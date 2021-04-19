@@ -8,9 +8,10 @@ import (
 
 // Config for ptm
 type Config struct {
-	MirrorsNums     int
+	MirrorCounts    uint
 	Interactive     bool
 	OnlyShowMirrors bool
+	AutoConfig      bool
 	MirrorURL       string
 	APIURL          string
 }
@@ -18,7 +19,7 @@ type Config struct {
 const (
 	mirrorFileURL = "https://gitee.com/Stitchtor/ptm/raw/master/raw/mirrors.json"
 	version       = 0.1
-	mirrors       = 3
+	mirrorCounts  = 3
 	link          = "https://gitee.com/Stitchtor/ptm"
 )
 
@@ -29,23 +30,33 @@ func cliParse(c *Config) []cli.Flag {
 			Aliases:     []string{"it"},
 			Usage:       "启用交互式配置",
 			Destination: &c.Interactive,
-			DefaultText: "否",
+			Value:       true,
+			DefaultText: "true",
 		},
-		&cli.IntFlag{
-			Name:        "mirrorcount",
+		&cli.BoolFlag{
+			Name:        "auto",
+			Aliases:     []string{"at"},
+			Usage:       "全自动配置",
+			Destination: &c.AutoConfig,
+			DefaultText: "false",
+		},
+		&cli.UintFlag{
+			Name:        "mirrorCount",
 			Aliases:     []string{"mc"},
 			Usage:       "写入的镜像站数目",
-			Destination: &c.MirrorsNums,
-			DefaultText: strconv.Itoa(mirrors),
+			Value:       mirrorCounts,
+			Destination: &c.MirrorCounts,
+			DefaultText: strconv.Itoa(mirrorCounts),
 		},
 		&cli.StringFlag{
 			Name:        "api",
-			Usage:       "镜像数据文件地",
+			Usage:       "镜像数据文件地址",
 			DefaultText: "https://gitee.com/Stitchtor/ptm/raw/master/raw/mirrors.json",
+			Value:       mirrorFileURL,
 			Destination: &c.APIURL,
 		},
 		&cli.StringFlag{
-			Name:        "mirrorsite",
+			Name:        "mirrorSites",
 			Aliases:     []string{"mt"},
 			Usage:       "自定义镜像地址，若启用则只会写入此一个镜像地址",
 			Destination: &c.MirrorURL,
@@ -54,9 +65,8 @@ func cliParse(c *Config) []cli.Flag {
 		&cli.BoolFlag{
 			Name:        "onlyShowMirror",
 			Aliases:     []string{"osm"},
-			Usage:       "只显示镜像站点信息,不进行操作",
+			Usage:       "只显示镜像站点信的撒息,不进行操作",
 			Destination: &c.OnlyShowMirrors,
-			DefaultText: "否",
 		},
 	}
 
