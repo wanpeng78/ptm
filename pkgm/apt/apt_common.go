@@ -1,10 +1,16 @@
 package apt
 
 import (
+	"errors"
 	"fmt"
 
 	"gitee.com/Stitchtor/ptm/syscheck"
 )
+
+// New return APT
+func New() APT {
+	return APT{}
+}
 
 //for generate system char
 func aptSymbols(sysmbol string) (result []string) {
@@ -44,5 +50,7 @@ func sysSymbol() (string, error) {
 		}
 	case 21:
 		return "hirsute", nil
+	default:
+		return "", errors.New("Unspported system version")
 	}
 }
