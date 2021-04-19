@@ -28,7 +28,7 @@ func (y YUM) WriteFile(mirrors filter.Results) error {
 	filePath := y.MirrorFilePath()
 	for _, mirror := range mirrors {
 		repo := repoGenerate(mirror)
-		file, err := os.OpenFile(filePath+repo.fileName, os.O_CREATE, 0664)
+		file, err := os.OpenFile(filePath+repo.fileName, os.O_CREATE|os.O_RDWR, 0664)
 		if err != nil {
 			return err
 		}
@@ -53,9 +53,9 @@ func (y YUM) MirrorFilePath() string {
 	return `/etc/yum.repos.d/`
 }
 
-// Refresh cleanup cache and make
+// Refresh cleanup cache and make new source cache
 func (y YUM) Refresh() *bufio.Reader {
-	cmd := exec.Command("yum", "repolist")
+	cmd := exec.Command("yum", "makecache")
 	out, _ := cmd.StdoutPipe()
 	cmd.Start()
 	return bufio.NewReader(out)
