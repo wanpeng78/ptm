@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
 
@@ -22,19 +23,19 @@ type MirrorsOnline struct {
 	ReleasedMsg string `json:"released_msg"`
 }
 
-func fetchData() (*MirrorsOnline, error) {
+func fetchData(dataSourceURL string) (*MirrorsOnline, error) {
 	colorful.Green("获取在线镜像数据.....")
 	mo := new(MirrorsOnline)
-	req, _ := http.NewRequest("GET", mirrorFileURL, nil)
+	req, _ := http.NewRequest("GET", dataSourceURL, nil)
 	req.Header.Set("User-Agent", "ptm")
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("镜像数据文件地址无效")
 	}
 	body, _ := ioutil.ReadAll(resp.Body)
 	err = json.Unmarshal(body, &mo)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("镜像数据文件无效")
 	}
 	// Check update
 	if mo.Version > version {
