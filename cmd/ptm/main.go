@@ -121,7 +121,7 @@ func showMirrorsInfo(mirrors filter.Results, cfg Config) (choices []int) {
 		strs := strings.Split(choicestr, ",")
 		for _, v := range strs {
 			idx, err := strconv.Atoi(v)
-			if err != nil || idx > len(mirrors) || idx < 0 {
+			if err != nil || idx > len(mirrors)-1 || idx < 0 {
 				colorful.Red("序号错误:%d\n", idx)
 				continue
 			}
