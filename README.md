@@ -7,13 +7,10 @@
 ### 下载
 可从右侧发行版下载最新版本<br>
 ```shell
-sudo wget https://gitee.com/Stitchtor/ptm/attach_files/677499/download/ptm_v0.1.0-next_Linux_x86_64.tar.gz
-```
-```
-sudo tar xvf ptm_v0.1.0-next_Linux_x86_64.tar.gz
+sudo curl -L https://gitee.com/Stitchtor/ptm/raw/master/raw/install.sh | sudo bash
 ```
 ### 运行
-`sudo ./ptm`
+`sudo ptm`</br>
 注：`ptm`需要root权限才能修改本地镜像文件，请以root用户运行
 ## 使用帮助
 配置项|含义|默认参数
